@@ -1,0 +1,37 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 25 (Oracle)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'oracle' # Utilise le JDK d'Oracle pour supporter pleinement la version 25
+        
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        gradle-version: '9.5.0'
+
+    - name: Build with Gradle
+      run: gradle build --no-daemon
+
+    - name: Upload Mod JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: Minecraft-Mod-JAR
+        path: build/libs/*.jar
